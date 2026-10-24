@@ -21,42 +21,12 @@ end
 
 function love.load()
 	loadlibs('librarys')
-	screens = require "scripts/screens"
-	font = 'assets/fonts/PeppaPigW1G-Regular.ttf'
-		
-	local l1 = screens.Text:new{
-		color = 'green',
-		text_color = {0,0,0},
-		width = 200,
-		height = 100,
-	}:setText('New text: %{0,1,0}[color]')
-	--~ :setFont(20, font)
+	require "scripts/utilits"
 	
-
-	local m1 = screens.Menu:new{
-		x = 0, y = 20, width = 200, item = 2,
-		strings = {
-			[1] = {
-				nam = 'greate',
-				act = function(s)
-					
-				end
-			},
-			[2] = {
-				nam = 'old'
-			}
-		}
-	}	
-	
-	main = screens.Screen:new{
+	l1 = Text:new{
 		width = 400,
-		height = 260,
-		drawing = function(s)
-			love.graphics.setColor(1,1,1)
-			love.graphics.rectangle('fill', s.x, s.y, s.width, s.height)
-		end,
-	}:add(l1, 'l1'):add(m1, 'm1')
-	
+		height = 200,
+	}:setText("Text in rectangle width: [width], height: [height]")
 	
 end
 
@@ -65,12 +35,24 @@ function love.update(dt)
 end
 
 function love.draw()
-	main:draw(0, 0)
+	for _, obj in pairs(Text:getInstances()) do
+		obj:draw()
+	end
+	
+	-- dbg
+	stats = love.graphics.getStats()
+	--~ dbg:draw(0, 0, stats)
 end
 
 function love.keypressed(key)
 	if key == 'r' then 
 		love.event.quit('restart') 
+	end
+	
+	
+	-- dbg
+	if key == '`' then
+		dbg:p(stats)
 	end
 end
 

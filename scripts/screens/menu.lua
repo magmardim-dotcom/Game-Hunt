@@ -1,7 +1,6 @@
 local Screen = require 'screen'
 
-local Menu = {}
-Menu = class:new(Menu, Screen)
+local Menu = class:new(Screen)
 	
 function Menu:new(o)
 	local o = o or {}	
@@ -13,8 +12,7 @@ function Menu:new(o)
 		o.lmark = o.lmark or "["
 		o.rmark = o.rmark or "]"
 		o.width = o.width or error("the menu width is not set")
-		local fontSize = (o.fontSize or self.__defaults.fontSize) * window:getFontScale()
-		o.font = o.font or love.graphics.newFont(fontSize)
+		o.font = o.font or self.__defaults.font
 		o.height = o.height or #o.strings * (o.font or love.graphics.getFont()):getHeight()
 		
 	return self.__create(o)
@@ -94,23 +92,8 @@ function Menu:keypressed(key, down, up, left, right, restart)
 	end
 end
 
-function Menu:setFont(size, fontFile)
-	size = size or error("size is nil in function Menu:setFont")
-	local newFont
-	local newSize = size * window:getFontScale()
-	
-	if fontFile then
-		newFont = love.graphics.newFont(fontFile, newSize)
-	else
-		if self.fontFile then
-			newFont = love.graphics.newFont(self.fontFile, newSize)
-		else
-			newFont = love.graphics.newFont(newSize)
-		end
-	end
-	self.fontFile = fontFile
-	self.fontSize = size
-	self.font = newFont
+function Menu:setFont(font)
+	self.font = font
 	
 	return self
 end

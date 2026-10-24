@@ -28,6 +28,7 @@ function set:add(...)
 	for _, v in ipairs({...}) do
         self[#self + 1] = v
     end	
+    return self
 end
 
 function set:pull(n)

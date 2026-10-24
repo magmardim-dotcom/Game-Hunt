@@ -67,8 +67,8 @@ function matrix:rotate(dir)
             end
         end
     end
-    return res
-    
+
+    return res    
 end
 
 return matrix

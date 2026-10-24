@@ -1,6 +1,5 @@
-local utilits = {}
+local screens = require "scripts/screens"
 
-
-
-
-return utilits
+Text = screens.Text
+Menu = screens.Menu
+Screen = screens.Screen

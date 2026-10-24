@@ -1,7 +1,6 @@
 local Screen = require 'screen'
 
-local Text = {}
-Text = class:new(Text, Screen)
+local Text = class:new(Screen)
 
 local function replase(str, vars)
 	local res
@@ -106,11 +105,10 @@ function Text:new(o)
 	o.x = o.x or 0
 	o.y = o.y or 0
 	o.width = o.width or error("the Text width is not set")		
-	o.height = o.height or error("the Text height is not set")	
-	o.textwidth = 0	
-	local fontSize = (o.fontSize or self.__defaults.fontSize) * window:getFontScale()
-	o.font = o.font or love.graphics.newFont(fontSize)
+	o.height = o.height or error("the Text height is not set")
+	o.font = o.font or self.__defaults.font
     o.text = love.graphics.newText(o.font)
+    o.string = ''
     
     return self.__create(o)
 end
@@ -124,31 +122,22 @@ end
 
 function Text:setText(text)
 	if text then
-		refresh(self, text)	
+		refresh(self, text)
+		self.string = text	
 	end	
 	return self
 end
 
-function Text:setFont(size, fontFile)
-	size = size or error("size is nil in function Text:setFont")
-	local newFont
-	local newSize = size * window:getFontScale()
+function Text:setFont(font)
+	self.font = font
+	self.text:setFont(self.font)
 	
-	if fontFile then
-		newFont = love.graphics.newFont(fontFile, newSize)
-	else
-		if self.font then
-			newFont = love.graphics.newFont(self.fontFile, newSize)
-		else
-			newFont = love.graphics.newFont(newSize)
-		end
+	if self.string ~= '' then
+		refresh(self, self.string)
 	end
-	self.text:setFont(newFont)
-	self.fontFile = fontFile
-	self.fontSize = size
-	self.font = newFont
 	
 	return self
 end
+
 
 return Text

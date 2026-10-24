@@ -1,6 +1,5 @@
 local defaults = require 'defaults' 
-local Screen = {}
-Screen = class:new(Screen, nil, defaults)
+local Screen = class:new(nil, defaults)
 
 function Screen:new(o)
     o = o or {}
@@ -15,10 +14,11 @@ end
 
 function Screen:draw(x, y)
 	local x, y = x or self.x, y or self.y
+	local window = window
 	love.graphics.push('all')
 	
 	if not love.graphics.getScissor() then 
-		love.graphics.setScissor(x * self.scaleW, y * self.scaleH, self.width * self.scaleW, self.height * self.scaleH)
+		love.graphics.setScissor(x * window.scaleW, y * window.scaleH, self.width * window.scaleW, self.height * window.scaleH)
 	end
 	
 	local offsetX, offsetY, angle = 0, 0, 0
@@ -28,8 +28,7 @@ function Screen:draw(x, y)
 		angle   = (math.random() * 2 - 1) * self.shake.rotation
 	end
     		
-	love.graphics.translate((x + offsetX) * self.scaleW, (y + offsetY) * self.scaleH) 
-	love.graphics.scale(self.scaleW, self.scaleH)
+	love.graphics.translate((x + offsetX) * window.scaleW, (y + offsetY) * window.scaleH) 	
 	love.graphics.translate(self.width/2, self.height/2)
 	love.graphics.rotate(self.r + math.rad(angle))
 	love.graphics.translate(-self.width/2, -self.height/2)		

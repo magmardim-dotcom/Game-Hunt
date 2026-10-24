@@ -3,12 +3,12 @@ local getDimensions = love.graphics.getDimensions
 local window = {
 	defWidth = 800,
 	defHeight = 600,
-	scaleWidth = 2,
-	scaleHeight = 1,
+	scaleW = 1,
+	scaleH = 1,
 }
 
 function window:getFontScale()
-	return math.max(self.scaleWidth, self.scaleHeight)
+	return math.max(self.scaleW, self.scaleH)
 end
 
 function window:refreshScale(newW, newH)
