@@ -41,6 +41,7 @@ function miniMap:render(rooms, width, height)
 			love.graphics.line(sx + size/2, sy + size/2, fx + size/2, fy + size/2)
 		end
 	end	
+	love.graphics.setColor(1, 1, 1, 1)
 	love.graphics.pop()
 	love.graphics.setCanvas()
 end

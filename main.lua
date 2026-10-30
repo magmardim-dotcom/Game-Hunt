@@ -4,17 +4,10 @@ require "scripts/utilits"
 local game = require 'scripts.game'
 
 function love.load()
-	math.randomseed(os.time())
+	--~ math.randomseed(os.time())
+	math.randomseed(13)
 	game:load()
 	
-	local canvas = love.graphics.newCanvas(32, 32)
-	love.graphics.setCanvas(canvas)
-	love.graphics.setColor(1, 1, 1, 1)
-	love.graphics.rectangle('fill', 0, 0, 31, 31)
-	love.graphics.setCanvas()
-	
-	local data = canvas:newImageData()
-	image = love.graphics.newImage( data )
 	
 end
 

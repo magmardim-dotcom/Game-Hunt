@@ -14,10 +14,11 @@ function dbg:update(stats)
 		string.format("Fonts: %d", stats.fonts),
 		string.format("Canvas: %d", stats.canvases),
 		string.format("Width: %d Height: %d", love.graphics.getWidth(), love.graphics.getHeight()),
-		'\n__Classes:',
+		'\n__Classes:',		
+		string.format("Screens: %d", #Screen:getInstances()),
 		string.format("Texts: %d", #Text:getInstances()),
 		string.format("Menus: %d", #Menu:getInstances()),
-		string.format("Screens: %d", #Screen:getInstances())
+		string.format("Chars: %d", #Char:getInstances()),
 	}
 	
 	res = table.concat(res, '\n')
