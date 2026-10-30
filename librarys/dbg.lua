@@ -1,7 +1,6 @@
 local dbg = {}
 	dbg.font = love.graphics.getFont()
 	dbg.color = {0,1,0}
-	dbg.stats = {}
 	
 function dbg:update(stats)	
 	local res = {

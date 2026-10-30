@@ -24,5 +24,10 @@ function load.scripts(folder)
 	return scripts
 end
 
+function load.json(fileName)
+	local file = love.filesystem.read(fileName)
+	return dkjson.decode(file)
+end
+
 
 return load

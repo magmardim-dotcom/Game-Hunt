@@ -1,5 +1,3 @@
-local map = {}
-
 local roomType = {
 	[1] = {w = 1, h = 1},
 	[2] = {w = 2, h = 1},
@@ -104,7 +102,7 @@ local function placement_from_neighbor(neigh, w, h)
     return nil, nil
 end
 
-function map.gen(width, height, setrooms)
+function generation(width, height, setrooms, brs)
 	local map = matrix:new(width, height, 0)
 	local firstIdx = setrooms:pull(1)
 	local w, h = roomType[firstIdx].w, roomType[firstIdx].h
@@ -165,7 +163,6 @@ function map.gen(width, height, setrooms)
 		end	
 	end
 	
-	local brs = 6 -- basic room size
 	map = matrix:new(width * (brs + 1), height * (brs + 1), 1)
 	
 	for _, room in ipairs(rooms) do
@@ -194,37 +191,4 @@ function map.gen(width, height, setrooms)
 	return map, rooms
 end
 
-function map.draw(m, r)
-	local scale = 1
-	local size = 10 * scale
-	
-	love.graphics.setLineWidth(scale)
-	
-	for y = 1, #m do
-		for x = 1, #m[1] do
-			if m[y][x] == 1 then 
-				love.graphics.setColor(0.2, 0.2, 0.2, 1)
-			else
-				love.graphics.setColor(0.4, 0.4, 0.4, 1)
-				love.graphics.rectangle('fill', (x-1) * size, (y-1) * size, size-scale, size-scale)
-			end
-			 
-		end
-	end
-	
-	for k,v in ipairs(r) do
-		local x, y = (v.x-1) * size, (v.y-1) * size
-		love.graphics.setColor(1, 1, 1, 1)
-		love.graphics.rectangle('fill', x, y, v.width * size, v.height * size)
-		love.graphics.setColor(1, 0, 0, 1)
-		love.graphics.rectangle('line', x, y, v.width * size, v.height * size)
-		love.graphics.setColor(1, 1, 1, 1)
-		for _, p in ipairs(v.passage) do
-			local sx, sy = (p.sx-1) * size, (p.sy-1) * size
-			local fx, fy = (p.fx-1) * size, (p.fy-1) * size
-			love.graphics.line(sx + size/2, sy + size/2, fx + size/2, fy + size/2)
-		end
-	end
-end
-
-return map
+return generation

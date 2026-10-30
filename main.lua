@@ -1,56 +1,43 @@
-function loadlibs(folder)
-	local paths = love.filesystem.getRequirePath( )
-	love.filesystem.setRequirePath( paths..';librarys/?.lua;' )
-	
-	local items = love.filesystem.getDirectoryItems(folder)
-	
-	if #items <= 0 then return end
-	
-	for _,item in ipairs(items) do
-		 
-		local i = string.find(item, "%.lua")
-		
-		if not i then
-			_G[item] = require (item.."/init")
-		else
-			item = item:sub(1, i-1)
-			_G[item] = require (item)
-		end
-	end
-end
+require "init"
+require "scripts/utilits"
+
+local game = require 'scripts.game'
 
 function love.load()
-	loadlibs('librarys')
-	require "scripts/utilits"
+	math.randomseed(os.time())
+	game:load()
 	
-	l1 = Text:new{
-		width = 400,
-		height = 200,
-	}:setText("Text in rectangle width: [width], height: [height]")
+	local canvas = love.graphics.newCanvas(32, 32)
+	love.graphics.setCanvas(canvas)
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.rectangle('fill', 0, 0, 31, 31)
+	love.graphics.setCanvas()
+	
+	local data = canvas:newImageData()
+	image = love.graphics.newImage( data )
 	
 end
 
 function love.update(dt)
-	
+	game:update(dt)
 end
 
 function love.draw()
-	for _, obj in pairs(Text:getInstances()) do
-		obj:draw()
-	end
+	game:draw()
 	
 	-- dbg
 	stats = love.graphics.getStats()
-	--~ dbg:draw(0, 0, stats)
 end
 
 function love.keypressed(key)
-	if key == 'r' then 
-		love.event.quit('restart') 
-	end
+	game:keypressed(key)
 	
 	
 	-- dbg
+	if key == 'f2' then 
+		love.event.quit('restart') 
+	end
+	
 	if key == '`' then
 		dbg:p(stats)
 	end
@@ -59,3 +46,5 @@ end
 function love.resize( w, h )
 	window.refreshScale(w, h)
 end
+
+
