@@ -1,6 +1,7 @@
 local obj = require "scripts/objs/obj"
 local char = class:new(obj)
 	char.color = {1,1,1}
+	char.type = "Person"
 
 function char:update(dt) 
 	if self.alpha <= 0.1 then self.alpha = 1 end

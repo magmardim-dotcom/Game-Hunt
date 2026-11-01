@@ -7,6 +7,8 @@ local world = {}
 	world.height = 6
 	world.objs = {}
 
+local cursor = require "scripts.cursor"	
+
 
 function game:load() 
 	local width, height = world.width, world.height
@@ -21,8 +23,8 @@ function game:load()
 		if scripts[v.name] then
 			scripts[v.name].screen.x = v.x
 			scripts[v.name].screen.y = v.y
-			scripts[v.name].screen.width = v.width
-			scripts[v.name].screen.height = v.height
+			scripts[v.name].screen.width = v.width * window.scaleW
+			scripts[v.name].screen.height = v.height * window.scaleH
 		end		
 	end
 		
@@ -33,7 +35,9 @@ function game:load()
 		y = ry,
 		inroom = r
 	}
-	world.player = world.objs[1]	
+	world.player = world.objs[1]
+	
+	cursor.x, cursor.y = rx, ry	
 		
 	for k, d in pairs(doors) do
 		local newDoor = Door:new{x = d.x, y = d.y}:switch(d.loc)
@@ -41,15 +45,15 @@ function game:load()
 	end
 	
 	scripts.globalMap.game = self
+	scripts.globalMap.map = world.map	
+	
 	scripts.miniMap:render(world.rooms, width, height)
-	scripts.globalMap.map = world.map
 end
 
 function game:draw() 
 	scripts.globalMap.screen:draw()
 	scripts.miniMap.screen:draw()
-	
-
+	scripts.obj_info.screen:draw()
 end
 
 function game:update(dt)
@@ -57,8 +61,8 @@ function game:update(dt)
 	local size = self.defaults.size
 	local brs = self.defaults.brs
 	
-	scripts.globalMap.offsetX = (player.x - 1) * size
-	scripts.globalMap.offsetY = (player.y - 1) * size
+	scripts.globalMap.offsetX = (cursor.x - 1) * size
+	scripts.globalMap.offsetY = (cursor.y - 1) * size
 	
 	for _, o in ipairs(world.objs) do
 		if o.update then o:update(dt) end
@@ -68,13 +72,13 @@ end
 function game:keypressed(key)
 	local world = self.world
 	if key == 'left' then
-		world.player.x = world.player.x - 1
+		cursor.x = cursor.x - 1
 	elseif key == 'right' then
-		world.player.x = world.player.x + 1 
+		cursor.x = cursor.x + 1 
 	elseif key == 'up' then
-		world.player.y = world.player.y - 1
+		cursor.y = cursor.y - 1
 	elseif key == 'down' then
-		world.player.y = world.player.y + 1
+		cursor.y = cursor.y + 1
 	end
 	
 	local def = self.defaults
@@ -84,8 +88,8 @@ function game:keypressed(key)
 		def.size = def.size + 2
 	end
 	
-	if key == 'p' then
-		game:whereCord(world.player.x, world.player.y)
+	if key == 'x' then
+		cursor:info(world.objs, cursor.x, cursor.y)
 	end
 end
 

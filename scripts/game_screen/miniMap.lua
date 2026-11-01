@@ -1,8 +1,5 @@
 local miniMap = {}
-local screen = {
-	width = (96 + 4) * window.scaleW,
-	height = (96 + 4) * window.scaleH
-}
+local screen = {}
 
 function screen:drawing()
 	love.graphics.draw(miniMap.canvas, 0, 0, 0, window.scaleW, window.scaleH)
@@ -23,8 +20,8 @@ function miniMap:render(rooms, width, height)
 	love.graphics.setLineWidth(2 * scale)
 	love.graphics.push()
 	love.graphics.translate(scale * 2, scale * 2)
-	love.graphics.setColor(.4, .68, .83, 1)
-	love.graphics.rectangle('fill', 0, 0, width, height)
+	--~ love.graphics.setColor(.4, .68, .83, 1)
+	--~ love.graphics.rectangle('fill', 0, 0, width, height)
 	love.graphics.setColor(1, 1, 1, 1)
 	love.graphics.rectangle('line', 0, 0, width, height)
 	

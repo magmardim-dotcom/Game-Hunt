@@ -2,6 +2,7 @@ local obj = require "scripts/objs/obj"
 local door = class:new(obj)
 	door.color = {0,1,0}
 	door.loc = false
+	door.type = "Door"
 	
 function door:switch(c)
 	self.loc = c

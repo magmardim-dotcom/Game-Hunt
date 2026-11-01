@@ -1,11 +1,10 @@
+local cursor = require "scripts.cursor"	
+
 local globalMap = {}
 	globalMap.offsetX = 0
 	globalMap.offsetY = 0
 
-local screen = {
-	width = 768 * window.scaleW,
-	height = 352 * window.scaleH
-}
+local screen = {}
 
 function screen:drawing() 
 	local game = globalMap.game
@@ -28,7 +27,7 @@ function screen:drawing()
 	end
 	
 	love.graphics.setBlendMode("alpha", "premultiplied")
-	love.graphics.setColor(0.9, 0.9, 0.9, 1)
+	love.graphics.setColor(0.5, 0.5, 0.5, 1)
 	for y = 1, h do
 		for x = 1, w do
 			if map[y][x] == 0 then 				
@@ -44,8 +43,11 @@ function screen:drawing()
 			 
 		end
 	end	
+	
+	cursor:draw(size)	
 	love.graphics.setColor(1,1,1)
 	love.graphics.pop()
+	love.graphics.rectangle('line', 0, 0, self.width, self.height)
 end
 
 globalMap.screen = Screen:new(screen)
