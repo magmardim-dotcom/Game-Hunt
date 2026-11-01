@@ -19,14 +19,22 @@ indent_mode=2
 
 [project]
 name=hunt
-base_path=D:\\Development\\Working\\Game-Hunt
+base_path=D:\\development\\Game-Hunt
 description=
+file_patterns=
 
 [long line marker]
 long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=0
-FILE_NAME_0=393;Lua;0;EUTF-8;1;1;0;D%3A%5CDevelopment%5CWorking%5CGame-Hunt%5Cmain.lua;0;4
-FILE_NAME_1=17;Lua;0;EUTF-8;1;1;0;D%3A%5CDevelopment%5CWorking%5CGame-Hunt%5Cscripts%5Clibrary%5Cload.lua;0;4
+current_page=6
+FILE_NAME_0=2260;Lua;0;EUTF-8;1;1;0;D%3A%5Cdevelopment%5CGame-Hunt%5Cscripts%5Cgame.lua;0;4
+FILE_NAME_1=763;Lua;0;EUTF-8;1;1;0;D%3A%5Cdevelopment%5CGame-Hunt%5Cscripts%5Cgame_screen%5CglobalMap.lua;0;4
+FILE_NAME_2=181;Lua;0;EUTF-8;1;1;0;D%3A%5Cdevelopment%5CGame-Hunt%5Cscripts%5Cutilits.lua;0;4
+FILE_NAME_3=77;Lua;0;EUTF-8;1;1;0;D%3A%5Cdevelopment%5CGame-Hunt%5Cscripts%5Cobjs%5Cobj.lua;0;4
+FILE_NAME_4=254;Lua;0;EUTF-8;1;1;0;D%3A%5Cdevelopment%5CGame-Hunt%5Cscripts%5Cobjs%5Cchar.lua;0;4
+FILE_NAME_5=46;Lua;0;EUTF-8;1;1;0;D%3A%5Cdevelopment%5CGame-Hunt%5Cscripts%5Cgame_screen%5Cgeneration.lua;0;4
+FILE_NAME_6=324;Lua;0;EUTF-8;1;1;0;D%3A%5Cdevelopment%5CGame-Hunt%5Cscripts%5Cobjs%5Cdoor.lua;0;4
+FILE_NAME_7=1012;Lua;0;EUTF-8;1;1;0;D%3A%5Cdevelopment%5CGame-Hunt%5Clibrarys%5Cdbg.lua;0;4
+FILE_NAME_8=571;Lua;0;EUTF-8;1;1;0;D%3A%5Cdevelopment%5CGame-Hunt%5Cscripts%5Cgame_screen%5Croom.lua;0;4

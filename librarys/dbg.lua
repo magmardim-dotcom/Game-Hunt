@@ -2,7 +2,7 @@ local dbg = {}
 	dbg.font = love.graphics.getFont()
 	dbg.color = {0,1,0}
 	
-function dbg:update(stats)	
+function dbg:update(stats, game)	
 	local res = {
 		'...',
 		string.format("OS is %s", love.system.getOS()),
@@ -18,7 +18,9 @@ function dbg:update(stats)
 		string.format("Screens: %d", #Screen:getInstances()),
 		string.format("Texts: %d", #Text:getInstances()),
 		string.format("Menus: %d", #Menu:getInstances()),
-		string.format("Chars: %d", #Char:getInstances()),
+		string.format("Doors: %d", #Door:getInstances()),
+		'\n__Game:',
+		string.format("player cordinates x: %d, y: %d", game.world.player.x, game.world.player.y),
 	}
 	
 	res = table.concat(res, '\n')
@@ -26,8 +28,8 @@ function dbg:update(stats)
 	return res
 end
 
-function dbg:p(stats)
-	print(self:update(stats))
+function dbg:p(stats, game)
+	print(self:update(stats, game))
 end
 
 function dbg:draw(x, y)

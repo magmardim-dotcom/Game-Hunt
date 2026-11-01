@@ -1,3 +1,5 @@
+local room = require "scripts.game_screen.room"
+
 local roomType = {
 	[1] = {w = 1, h = 1},
 	[2] = {w = 2, h = 1},
@@ -5,11 +7,7 @@ local roomType = {
 	[4] = {w = 2, h = 2}
 }
 
-local function newroom(x, y, w, h, p)
-    return {x = x, y = y, width = w, height = h}
-end 
-
-directions = {
+local directions = {
 		{1,0}, {-1,0}, {0,1}, {0,-1}
 	}
 
@@ -106,7 +104,7 @@ function generation(width, height, setrooms, brs)
 	local map = matrix:new(width, height, 0)
 	local firstIdx = setrooms:pull(1)
 	local w, h = roomType[firstIdx].w, roomType[firstIdx].h
-	local start = {x = math.floor(width/2), y = math.floor(height/2), width = w, height = h}	
+	local start = room:new(math.floor(width/2), math.floor(height/2), w, h)	
 	local rooms = set:new(start)
 	
 	fill(map, start, 1)
@@ -132,7 +130,8 @@ function generation(width, height, setrooms, brs)
             
             local x, y = placement_from_neighbor(cell, rw, rh)
             if x and y and can_place(map, x, y, rw, rh) then
-                local newRoom = newroom(x, y, rw, rh)
+                local newRoom = room:new(x, y, rw, rh)
+                
                 fill(map, newRoom, 1)
                 rooms:add(newRoom)
                 
@@ -147,7 +146,7 @@ function generation(width, height, setrooms, brs)
 		end		
 	end
 	
-	for _, room in ipairs(rooms) do
+	for _, room in ipairs(rooms) do										-- добавляем все переходы в списко rooms
 		local neighset = set:new()
 				
 		local n = getneighbours(room)
@@ -155,15 +154,16 @@ function generation(width, height, setrooms, brs)
 			neighset:add(n:get(i))
 		end	
 		
-		room.passage = set:new()
 		for _, neigh in ipairs(neighset) do
 			if map[neigh.y] and map[neigh.y][neigh.x] == 1 then
-				room.passage:add({sx = neigh.x, sy = neigh.y, fx = neigh.fx, fy = neigh.fy, to = neigh})
+				room.passage:add({sx = neigh.x, sy = neigh.y, fx = neigh.fx, fy = neigh.fy, to = neigh, loc = false})
 			end
 		end	
 	end
 	
 	map = matrix:new(width * (brs + 1), height * (brs + 1), 1)
+	
+	local doors = {}
 	
 	for _, room in ipairs(rooms) do
 		local x1 = (room.x * brs) + 1
@@ -175,20 +175,21 @@ function generation(width, height, setrooms, brs)
 			for x = x1, x2-2 do
 				map:set(x, y, 0)
 			end
-		end
+		end		
 		
-		for _, p in ipairs(room.passage) do
-			local sx, sy = (p.sx * brs) + brs/2, (p.sy * brs) + brs/2
-			local fx, fy = (p.fx * brs) + brs/2, (p.fy * brs) + brs/2
-			for y = sy, fy do
-				for x = sx, fx do
-					map:set(x, y, 0)
-				end
+		local half = brs/2
+		for k, p in ipairs(room.passage) do								-- находим переходы между комнатами и добавляем на карту
+			local mx = (p.sx + p.fx) * half + half
+			local my = (p.sy + p.fy) * half + half
+			map:set(mx, my, 0) 
+			
+			if not doors[mx.."-"..my] then 								
+				doors[mx.."-"..my] = {x = mx, y = my, loc = false}
 			end
 		end
 	end
 	
-	return map, rooms
+	return map, rooms, doors
 end
 
 return generation

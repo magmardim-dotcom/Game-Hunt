@@ -32,7 +32,7 @@ function love.keypressed(key)
 	end
 	
 	if key == '`' then
-		dbg:p(stats)
+		dbg:p(stats, game)
 	end
 end
 

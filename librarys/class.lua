@@ -41,7 +41,7 @@ function class:new(parent, defaults)
         return obj
     end
 
-    if rawget(c, "new") == nil then
+    if rawget(c, "new") == nil and not c.__parent then
         function c:new(o)
             o = o or {}
             

@@ -5,7 +5,6 @@ local globalMap = {}
 local screen = {
 	width = 768 * window.scaleW,
 	height = 352 * window.scaleH
-	
 }
 
 function screen:drawing() 
@@ -14,29 +13,37 @@ function screen:drawing()
 	local size = game.defaults.size * scale
 	local map = globalMap.map
 	local h, w = #map, #map[1]
-	local brs = 6
 	local ox = (self.width/2) - globalMap.offsetX
 	local oy = (self.height/2) - globalMap.offsetY
 	
 	love.graphics.push()
 	love.graphics.setLineWidth(scale)
-	love.graphics.setColor(0, .47, .6, 1)
+	love.graphics.setColor(0.1, 0.1, 0.1, 1)
 	love.graphics.rectangle('fill', 0, 0, self.width, self.height)
-	love.graphics.translate(ox, oy)
-	love.graphics.setColor(0, .15, .34, 1)
+	love.graphics.translate(ox, oy)		
+	
+	for o = #game.world.objs, 1, -1 do
+		local obj = game.world.objs[o]
+		if obj then obj:draw(size) end
+	end
+	
+	love.graphics.setBlendMode("alpha", "premultiplied")
+	love.graphics.setColor(0.9, 0.9, 0.9, 1)
 	for y = 1, h do
 		for x = 1, w do
-			if map[y][x] ~= 1 then 						
-				love.graphics.rectangle('fill', (x-brs-1) * size, (y-brs-1) * size, size-scale, size-scale)
+			if map[y][x] == 0 then 				
+				local x1, y1 = (x-1) * size, (y-1) * size 			-- top  left
+				local x2, y2 = x1 + size, y1 						-- top  right
+				local x3, y3 = x2, y2 + size						-- down right
+				local x4, y4 = x1, y3								-- down left 
+				
+				love.graphics.line({x1, y1, x2, y2, x3, y3, x4, y4, x1, y1})
+			elseif map[y][x] == 2 then
+				love.graphics.rectangle('fill', (x-1) * size, (y-1) * size, size, size)
 			end
 			 
 		end
 	end	
-	
-	for _, o in ipairs(game.objs) do
-		if o.draw then o:draw(size) end
-	end 
-	
 	love.graphics.setColor(1,1,1)
 	love.graphics.pop()
 end
