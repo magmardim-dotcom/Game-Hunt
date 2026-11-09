@@ -71,8 +71,6 @@ local function wrapcoloredtext(coloredtext, self)
 			end
 			
 		end
-		
-		
 	end
 	wraptext[#wraptext + 1] = line	
 	
@@ -104,9 +102,9 @@ function Text:new(o)
         
 	o.x = o.x or 0
 	o.y = o.y or 0
-	o.width = o.width or error("the Text width is not set")		
-	o.height = o.height or error("the Text height is not set")
 	o.font = o.font or self.__defaults.font
+	o.width = o.width or error("the Text width is not set")		
+	o.height = o.height or o.font:getHeight()
     o.text = love.graphics.newText(o.font)
     o.string = ''
     

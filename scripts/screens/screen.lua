@@ -18,7 +18,7 @@ function Screen:draw(x, y)
 	love.graphics.push('all')
 	
 	if not love.graphics.getScissor() then 
-		love.graphics.setScissor(x * window.scaleW, y * window.scaleH, self.width * window.scaleW, self.height * window.scaleH)
+		love.graphics.setScissor(x * window.scaleW, y * window.scaleH, self.width, self.height)
 	end
 	
 	local offsetX, offsetY, angle = 0, 0, 0
@@ -53,10 +53,25 @@ end
 function Screen:add(obj, nam)
 	if self.objs then
 		self.objs[nam] = obj
+		obj.where = self
 	end
-	obj.where = self
 	
 	return self
+end
+
+function Screen:getObj(nam)
+	return self.objs[nam]
+end
+
+function Screen:getNumObj()
+	if not self.objs then return 0 end
+	local n = 0
+	
+	for _, _ in pairs(self.objs) do
+		n = n + 1
+	end
+	
+	return n
 end
 
 function Screen:update(dt)

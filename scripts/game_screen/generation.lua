@@ -161,7 +161,7 @@ function generation(width, height, setrooms, brs)
 		end	
 	end
 	
-	map = matrix:new(width * (brs + 1), height * (brs + 1), 1)
+	map = matrix:new(width * (brs + 1), height * (brs + 1), 0)
 	
 	local doors = {}
 	
@@ -171,6 +171,11 @@ function generation(width, height, setrooms, brs)
 		local y1 = (room.y * brs) + 1
 		local y2 = y1 + (room.height * brs)
 		 
+		for y = y1-1, y2-1 do
+			for x = x1-1, x2-1 do
+				map:set(x, y, 1)
+			end
+		end		
 		for y = y1, y2-2 do
 			for x = x1, x2-2 do
 				map:set(x, y, 0)
@@ -181,7 +186,7 @@ function generation(width, height, setrooms, brs)
 		for k, p in ipairs(room.passage) do								-- находим переходы между комнатами и добавляем на карту
 			local mx = (p.sx + p.fx) * half + half
 			local my = (p.sy + p.fy) * half + half
-			map:set(mx, my, 0) 
+			map:set(mx, my, 2) 
 			
 			if not doors[mx.."-"..my] then 								
 				doors[mx.."-"..my] = {x = mx, y = my, loc = false}

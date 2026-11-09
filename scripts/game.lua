@@ -2,64 +2,64 @@ local scripts = load.scripts('scripts/game_screen')
 local screenCords = load.json('jsons/game_screen.json')
 
 local game = {}
-local world = {}
-	world.width = 6
-	world.height = 6
-	world.objs = {}
-
+local world = require 'scripts.world'
 local cursor = require "scripts.cursor"	
-
 
 function game:load() 
 	local width, height = world.width, world.height
-	self.defaults = scripts.defaults
 	self.world = world
+	self.inputText = ''
+	self.inputResult = ''
+	
 	world.map, world.rooms, doors = scripts.generation(
-		width, height, set:new(4,1,1,1,1,1,1,1,1,1,1,1,1,2,3), self.defaults.brs
-		--~ width, height, set:new(4,1), self.defaults.brs
-		)
+		--~ width, height, set:new(4,1,1,1,1,1,1,1,1,1,1,1,1,2,3), defaults.brs
+		width, height, set:new(4,4,4,4), defaults.brs
+	)
 	
 	for _, v in pairs(screenCords.layers[1].objects) do
+		local s = scripts[v.name]
 		if scripts[v.name] then
-			scripts[v.name].screen.x = v.x
-			scripts[v.name].screen.y = v.y
-			scripts[v.name].screen.width = v.width * window.scaleW
-			scripts[v.name].screen.height = v.height * window.scaleH
+			s.screen.x = v.x
+			s.screen.y = v.y
+			s.screen.width = v.width * window.scaleW
+			s.screen.height = v.height * window.scaleH
+			if s.load then s:load() end
 		end		
 	end
 		
 	local r = world.rooms:get(1) 
-	local rx, ry = r:getcenter(self.defaults.brs)
-	world.objs[1] = Char:new{
+	local rx, ry = r:getcenter(defaults.brs)
+	world.objs[1] = Char:new({
 		x = rx,
-		y = ry,
-		inroom = r
-	}
+		y = ry
+	}, world, scripts.defaults)
 	world.player = world.objs[1]
+	world.player:perceive(self.world.map)
 	
 	cursor.x, cursor.y = rx, ry	
 		
 	for k, d in pairs(doors) do
-		local newDoor = Door:new{x = d.x, y = d.y}:switch(d.loc)
+		local newDoor = Door:new({x = d.x, y = d.y}, world)
+		newDoor:getRoomsConnected()
 		table.insert(world.objs, newDoor)
 	end
 	
 	scripts.globalMap.game = self
 	scripts.globalMap.map = world.map	
-	
 	scripts.miniMap:render(world.rooms, width, height)
 end
 
 function game:draw() 
-	scripts.globalMap.screen:draw()
-	scripts.miniMap.screen:draw()
-	scripts.obj_info.screen:draw()
+	for _, v in pairs(screenCords.layers[1].objects) do
+		local s = scripts[v.name].screen
+		s:draw()
+	end
 end
 
 function game:update(dt)
 	local player = self.world.player
-	local size = self.defaults.size
-	local brs = self.defaults.brs
+	local size = defaults.size * window:getScale()
+	local brs = defaults.brs
 	
 	scripts.globalMap.offsetX = (cursor.x - 1) * size
 	scripts.globalMap.offsetY = (cursor.y - 1) * size
@@ -67,10 +67,14 @@ function game:update(dt)
 	for _, o in ipairs(world.objs) do
 		if o.update then o:update(dt) end
 	end 
+	
+	scripts.terminal.inputText = self.inputText
 end
 
 function game:keypressed(key)
 	local world = self.world
+	local pl = world.player
+	
 	if key == 'left' then
 		cursor.x = cursor.x - 1
 	elseif key == 'right' then
@@ -81,25 +85,52 @@ function game:keypressed(key)
 		cursor.y = cursor.y + 1
 	end
 	
-	local def = self.defaults
-	if key == '-' and def.size >= 12 then
+	pl:moveTo(cursor.x, cursor.y)
+	pl:perceive(world.map)
+	
+	if key == "backspace" then
+        self.inputText = self.inputText:sub(1, -2)
+    elseif key == 'return' then
+		if scripts.commands[self.inputText] then scripts.commands[self.inputText](scripts, cursor, game) end
+		local output = self.inputText..(self.inputResult ~= '' and ': ' or '')..self.inputResult
+		table.insert(scripts.terminal.history, 1, output)		
+		self.inputText = ''
+		self.inputResult = ''
+	end
+	
+	if key == 'x' then
+			
+	end
+	
+	local def = defaults
+	if key == '-' and def.size >= 16 then
 		def.size = def.size - 2
 	elseif key == '=' then
 		def.size = def.size + 2
 	end
 	
-	if key == 'x' then
-		cursor:info(world.objs, cursor.x, cursor.y)
-	end
-end
-
-function game:whereCord(x, y)
-	for _, room in ipairs(world.rooms) do
-		if room:cordinateIsRoom(x, y, self.defaults.brs) then
+	if key == 'f12' then
+		window:setFullscreen()
 		
+		for _, v in pairs(screenCords.layers[1].objects) do
+			local s = scripts[v.name]
+			if s then
+				s.screen.x = v.x
+				s.screen.y = v.y
+				s.screen.width = v.width * window.scaleW
+				s.screen.height = v.height * window.scaleH
+			end		
 		end
+		scripts.miniMap:render(world.rooms, world.width, world.height)	
+		scripts.obj_info:rescale()
+		scripts.terminal:rescale()
 	end
 	
+
+end
+
+function game:textinput(text)
+    --~ self.inputText = self.inputText .. text
 end
 
 return game

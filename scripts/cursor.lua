@@ -11,9 +11,7 @@ end
 function cursor:info(objs, x, y)
 	for o = 1, #objs do
 		local obj = objs[o]
-		if obj.x == x and obj.y == y then 
-			
-			
+		if obj.x == self.x and obj.y == self.y then 
 			return obj
 		end
 	end

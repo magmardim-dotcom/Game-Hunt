@@ -4,8 +4,8 @@ require "scripts/utilits"
 local game = require 'scripts.game'
 
 function love.load()
-	--~ math.randomseed(os.time())
-	math.randomseed(13)
+	math.randomseed(os.time())
+	--~ math.randomseed(13)
 	game:load()
 	
 	
@@ -36,8 +36,12 @@ function love.keypressed(key)
 	end
 end
 
-function love.resize( w, h )
-	window.refreshScale(w, h)
+function love.textinput(text)
+    game:textinput(text)
+end
+
+function love.resize(w, h)
+	
 end
 
 

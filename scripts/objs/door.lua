@@ -1,23 +1,52 @@
 local obj = require "scripts/objs/obj"
 local door = class:new(obj)
 	door.color = {0,1,0}
-	door.loc = false
+	door.lock = false
 	door.type = "Door"
 	
-function door:switch(c)
-	self.loc = c
-	self.color = self.loc and {1,0,0} or {0,1,0}
+function door:switch()
+	self.lock = not self.lock
+	self.color = self.lock and {1,0,0} or {0,1,0}
+	self.world.map:set(self.x, self.y, self.world.map:get(self.x, self.y) == 1 and 0 or 1) 
+	
 	return self
 end
 
-function door:getRooms(rooms)
-	if self.r1 and self.r2 then return self.r1, self.r2 end 
+function door:getRoomsConnected()
+	if self.connects then 
+		return self.connects 
+	end
 	
-	for _, room in ipairs(rooms) do
-		if room:cordinateIsRoom(x, y, self.defaults.brs) then
-		
+	local rooms = self.world.rooms
+	local connects = {}
+	
+	for _, room in ipairs(rooms) do 
+		if room:cordinateTouchRoom(self.x, self.y) then  
+			table.insert(connects, room)
 		end
 	end	
+	self.connects = connects
+	
+	return connects
+end
+
+function door:goto(from_roomid)
+	if not self.connects then
+		self:getRoomsConnected()
+	end
+	
+	if self.connects[1]:getID() == from_roomid then
+		return self.connects[1]
+	else
+		return self.connects[2]
+	end
+end
+
+function door:getInfo()
+	return {
+		self.type..': %{1,1,1}'..self:getID(),
+		'status: '..(self.lock and '%{1,0,0}close' or '%{0,1,1}open')
+	}
 end
 	
 
